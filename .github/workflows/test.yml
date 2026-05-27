@@ -101,3 +101,26 @@ jobs:
             exit 1
           fi
           echo "¡El control de fallas estrictas funciona correctamente!"
+
+      # ========================================================
+      # PRUEBA 5: Consumo desde release externa/tag estable
+      # ========================================================
+      - name: 'Test 5: Consumo mediante Tag estable (v1.0.0)'
+        id: test_tag
+        uses: alejandrita20030-cpu/lab-6@v1.0.0
+        with:
+          branch-name: 'feature/PROJ-789-external-test'
+          fail-on-error: 'false'
+
+      - name: 'Test 5: Validar Resultados'
+        run: |
+          echo "=== RESULTADOS TEST 5 ==="
+          echo "Is Valid: ${{ steps.test_tag.outputs.is-valid }}"
+          echo "Prefix:   ${{ steps.test_tag.outputs.prefix }}"
+          echo "Ticket:   ${{ steps.test_tag.outputs.ticket-id }}"
+          echo "Summary:  ${{ steps.test_tag.outputs.summary }}"
+          if [ "${{ steps.test_tag.outputs.is-valid }}" != "true" ]; then
+            echo "Error: Se esperaba que la rama fuera válida consumiendo el tag v1.0.0"
+            exit 1
+          fi
+
