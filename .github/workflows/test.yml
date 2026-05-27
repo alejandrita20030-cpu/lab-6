@@ -26,13 +26,18 @@ jobs:
           fail-on-error: 'false'
 
       - name: 'Test 1: Validar Resultados'
+        env:
+          IS_VALID: ${{ steps.test_valid.outputs.is-valid }}
+          PREFIX: ${{ steps.test_valid.outputs.prefix }}
+          TICKET_ID: ${{ steps.test_valid.outputs.ticket-id }}
+          SUMMARY: ${{ steps.test_valid.outputs.summary }}
         run: |
           echo "=== RESULTADOS TEST 1 ==="
-          echo "Is Valid: ${{ steps.test_valid.outputs.is-valid }}"
-          echo "Prefix:   ${{ steps.test_valid.outputs.prefix }}"
-          echo "Ticket:   ${{ steps.test_valid.outputs.ticket-id }}"
-          echo "Summary:  ${{ steps.test_valid.outputs.summary }}"
-          if [ "${{ steps.test_valid.outputs.is-valid }}" != "true" ]; then
+          echo "Is Valid: $IS_VALID"
+          echo "Prefix:   $PREFIX"
+          echo "Ticket:   $TICKET_ID"
+          echo "Summary:  $SUMMARY"
+          if [ "$IS_VALID" != "true" ]; then
             echo "Error: Se esperaba que la rama fuera válida"
             exit 1
           fi
@@ -48,13 +53,18 @@ jobs:
           fail-on-error: 'false'
 
       - name: 'Test 2: Validar Resultados'
+        env:
+          IS_VALID: ${{ steps.test_invalid.outputs.is-valid }}
+          PREFIX: ${{ steps.test_invalid.outputs.prefix }}
+          TICKET_ID: ${{ steps.test_invalid.outputs.ticket-id }}
+          SUMMARY: ${{ steps.test_invalid.outputs.summary }}
         run: |
           echo "=== RESULTADOS TEST 2 ==="
-          echo "Is Valid: ${{ steps.test_invalid.outputs.is-valid }}"
-          echo "Prefix:   ${{ steps.test_invalid.outputs.prefix }}"
-          echo "Ticket:   ${{ steps.test_invalid.outputs.ticket-id }}"
-          echo "Summary:  ${{ steps.test_invalid.outputs.summary }}"
-          if [ "${{ steps.test_invalid.outputs.is-valid }}" != "false" ]; then
+          echo "Is Valid: $IS_VALID"
+          echo "Prefix:   $PREFIX"
+          echo "Ticket:   $TICKET_ID"
+          echo "Summary:  $SUMMARY"
+          if [ "$IS_VALID" != "false" ]; then
             echo "Error: Se esperaba que la rama fuera inválida"
             exit 1
           fi
@@ -70,11 +80,14 @@ jobs:
           fail-on-error: 'false'
 
       - name: 'Test 3: Validar Resultados'
+        env:
+          IS_VALID: ${{ steps.test_empty.outputs.is-valid }}
+          SUMMARY: ${{ steps.test_empty.outputs.summary }}
         run: |
           echo "=== RESULTADOS TEST 3 ==="
-          echo "Is Valid: ${{ steps.test_empty.outputs.is-valid }}"
-          echo "Summary:  ${{ steps.test_empty.outputs.summary }}"
-          if [ "${{ steps.test_empty.outputs.is-valid }}" != "false" ]; then
+          echo "Is Valid: $IS_VALID"
+          echo "Summary:  $SUMMARY"
+          if [ "$IS_VALID" != "false" ]; then
             echo "Error: Se esperaba que fuera inválido por estar vacío"
             exit 1
           fi
@@ -113,14 +126,18 @@ jobs:
           fail-on-error: 'false'
 
       - name: 'Test 5: Validar Resultados'
+        env:
+          IS_VALID: ${{ steps.test_tag.outputs.is-valid }}
+          PREFIX: ${{ steps.test_tag.outputs.prefix }}
+          TICKET_ID: ${{ steps.test_tag.outputs.ticket-id }}
+          SUMMARY: ${{ steps.test_tag.outputs.summary }}
         run: |
           echo "=== RESULTADOS TEST 5 ==="
-          echo "Is Valid: ${{ steps.test_tag.outputs.is-valid }}"
-          echo "Prefix:   ${{ steps.test_tag.outputs.prefix }}"
-          echo "Ticket:   ${{ steps.test_tag.outputs.ticket-id }}"
-          echo "Summary:  ${{ steps.test_tag.outputs.summary }}"
-          if [ "${{ steps.test_tag.outputs.is-valid }}" != "true" ]; then
+          echo "Is Valid: $IS_VALID"
+          echo "Prefix:   $PREFIX"
+          echo "Ticket:   $TICKET_ID"
+          echo "Summary:  $SUMMARY"
+          if [ "$IS_VALID" != "true" ]; then
             echo "Error: Se esperaba que la rama fuera válida consumiendo el tag v1.0.0"
             exit 1
           fi
-
