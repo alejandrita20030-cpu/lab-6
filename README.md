@@ -1,5 +1,7 @@
 # Branch Naming Validator - GitHub Custom Action
 
+[![Test Custom Action](https://github.com/alejandrita20030-cpu/lab-6/actions/workflows/test.yml/badge.svg)](https://github.com/alejandrita20030-cpu/lab-6/actions/workflows/test.yml)
+
 Esta es una Custom Action de tipo JavaScript (Node.js 20) que valida el nombre de la rama en ejecución contra una expresión regular configurable, extrae dinámicamente información de la rama (como el tipo de tarea y el ID del ticket) y expone outputs para ser consumidos por otros pasos del flujo de trabajo.
 
 Diseñada para asegurar que el equipo siga las convenciones de nomenclatura en Git (por ejemplo: `feature/PROJ-123-new-login`).
