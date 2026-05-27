@@ -1,0 +1,31 @@
+name: 'Branch Naming Validator'
+description: 'Valida si el nombre de una rama sigue las convenciones establecidas de branching y extrae prefijos y IDs de tickets de manera dinámica.'
+author: 'Antigravity AI'
+inputs:
+  branch-name:
+    description: 'Nombre de la rama que se va a validar'
+    required: false
+    default: '${{ github.head_ref || github.ref_name }}'
+  regex:
+    description: 'Expresión regular personalizada para validar el nombre de la rama. Debe contener dos grupos de captura: (1) prefijo, (2) ID de ticket.'
+    required: false
+    default: '^(feature|bugfix|hotfix|release)\/([a-zA-Z0-9]+-[0-9]+)-.+'
+  fail-on-error:
+    description: 'Define si el workflow debe fallar cuando el nombre de la rama sea inválido'
+    required: false
+    default: 'true'
+outputs:
+  is-valid:
+    description: 'Indica si el nombre de la rama cumple con las reglas establecidas ("true" o "false")'
+  prefix:
+    description: 'El prefijo del tipo de rama extraído (ej. "feature", "bugfix")'
+  ticket-id:
+    description: 'El identificador de ticket/tarea extraído (ej. "PROJ-123")'
+  summary:
+    description: 'Resumen descriptivo del resultado de la validación'
+runs:
+  using: 'node20'
+  main: 'index.js'
+branding:
+  icon: 'git-branch'
+  color: 'blue'

@@ -1,0 +1,103 @@
+name: Test Custom Action
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test-validation:
+    runs-on: ubuntu-latest
+    name: Pruebas de Funcionamiento de la Custom Action
+    steps:
+      - name: Descargar Código (Checkout)
+        uses: actions/checkout@v4
+
+      # ========================================================
+      # PRUEBA 1: Nombre de rama válido
+      # ========================================================
+      - name: 'Test 1: Rama Válida (Convencional)'
+        id: test_valid
+        uses: ./
+        with:
+          branch-name: 'feature/PROJ-123-new-login'
+          fail-on-error: 'false'
+
+      - name: 'Test 1: Validar Resultados'
+        run: |
+          echo "=== RESULTADOS TEST 1 ==="
+          echo "Is Valid: ${{ steps.test_valid.outputs.is-valid }}"
+          echo "Prefix:   ${{ steps.test_valid.outputs.prefix }}"
+          echo "Ticket:   ${{ steps.test_valid.outputs.ticket-id }}"
+          echo "Summary:  ${{ steps.test_valid.outputs.summary }}"
+          if [ "${{ steps.test_valid.outputs.is-valid }}" != "true" ]; then
+            echo "Error: Se esperaba que la rama fuera válida"
+            exit 1
+          fi
+
+      # ========================================================
+      # PRUEBA 2: Nombre de rama inválido
+      # ========================================================
+      - name: 'Test 2: Rama Inválida'
+        id: test_invalid
+        uses: ./
+        with:
+          branch-name: 'temp_debug_fix'
+          fail-on-error: 'false'
+
+      - name: 'Test 2: Validar Resultados'
+        run: |
+          echo "=== RESULTADOS TEST 2 ==="
+          echo "Is Valid: ${{ steps.test_invalid.outputs.is-valid }}"
+          echo "Prefix:   ${{ steps.test_invalid.outputs.prefix }}"
+          echo "Ticket:   ${{ steps.test_invalid.outputs.ticket-id }}"
+          echo "Summary:  ${{ steps.test_invalid.outputs.summary }}"
+          if [ "${{ steps.test_invalid.outputs.is-valid }}" != "false" ]; then
+            echo "Error: Se esperaba que la rama fuera inválida"
+            exit 1
+          fi
+
+      # ========================================================
+      # PRUEBA 3: Robustez ante entrada vacía
+      # ========================================================
+      - name: 'Test 3: Entrada Vacía (Manejo de Errores)'
+        id: test_empty
+        uses: ./
+        with:
+          branch-name: ''
+          fail-on-error: 'false'
+
+      - name: 'Test 3: Validar Resultados'
+        run: |
+          echo "=== RESULTADOS TEST 3 ==="
+          echo "Is Valid: ${{ steps.test_empty.outputs.is-valid }}"
+          echo "Summary:  ${{ steps.test_empty.outputs.summary }}"
+          if [ "${{ steps.test_empty.outputs.is-valid }}" != "false" ]; then
+            echo "Error: Se esperaba que fuera inválido por estar vacío"
+            exit 1
+          fi
+
+      # ========================================================
+      # PRUEBA 4: Comportamiento Estricto (Debe Fallar el Paso)
+      # ========================================================
+      - name: 'Test 4: Comportamiento Estricto (Esperado que falle)'
+        id: test_strict
+        uses: ./
+        # continue-on-error permite que el workflow continúe en verde
+        # aunque este paso retorne código de salida de error (exit code 1)
+        continue-on-error: true
+        with:
+          branch-name: 'feature/no-ticket-here'
+          fail-on-error: 'true'
+
+      - name: 'Test 4: Validar que falló el paso anterior'
+        run: |
+          echo "=== RESULTADOS TEST 4 ==="
+          echo "El paso anterior debió haber fallado. Estado del step anterior: ${{ steps.test_strict.outcome }}"
+          if [ "${{ steps.test_strict.outcome }}" != "failure" ]; then
+            echo "Error: Se esperaba que la acción fallara de forma estricta"
+            exit 1
+          fi
+          echo "¡El control de fallas estrictas funciona correctamente!"
